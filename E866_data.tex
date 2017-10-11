@@ -4,6 +4,7 @@
 \usepackage{subfig}
 \usepackage[numbers, sort]{natbib}
 \usepackage{hyperref}
+\usepackage{amsmath}
 \setlength{\topmargin}{-0.5in}
 \setlength{\evensidemargin}{0in}
 \setlength{\oddsidemargin}{0in}
@@ -24,28 +25,87 @@
 %%%%%%%%%
 
 \title{E866/NuSea data in NNPDF}
-\author{nh}
+\author{Nathan Hartland, Rabah Abdul Khalek}
 \begin{document}
 \maketitle
-Fixed target Drell-Yan data from the E866/NuSea experiment is used in two forms in NNPDF.
-Firstly the $pd$ / $pp$ cross-section ratios of~\cite{Towell:2001nh} and secondly the absolute
-$pp$ differential cross-section measurements of ~\cite{Webb:2003ps}. Here we shall discuss the
-two experiments and their implementation in the NNPDF code.
 
-Data was taken with an 800 GeV proton beam upon hydrogen and deuterium gas targets with collisions
-consequently taking place at a hadron-hadron centre of mass energy of $\sqrt{s}=38.8$ GeV.
+\begin{abstract}
+We review in this paper the $\bar{d}/\bar{u}$ ratio and the absolute pp differential cross-section realized by the NuSea collaboration on the E866 fixed target Drell-Yan data. We investigate essentially the folding of the detector efficiency in the measurements and its relative effect on the PDF and the deuterium nuclear effects extraction.
+\end{abstract}
+
+\section{Introduction}
+In perturbation theory, a symmetry in $\bar{d}/\bar{u}$ is anticipated. The sea of quark-antiquark pairs is produced perturbatively from gluon splitting and since the mass difference of the up and down quarks is small, nearly equal numbers of up and down pairs should result.
+Recent measurements (FNAL, NMC, NA51, HERMES) have shown a large asymmetry in the distributions of up and down antiquarks $\bar{d}/\bar{u}$ in the nucleon. 
+In addition, The data from experiment E866 at Fermilab were the first to demonstrate a strong Bjorken-x dependence of the $\bar{d}/\bar{u}$ ratio.
+
+\section{NMC experiment}
+The NMC measured the cross section ratio for deep inelastic scattering (DIS) of muons from hydrogen and deuterium.
+Their extrapolated result for the integral of the difference of the proton and neutron structure functions is 
+\begin{equation}
+\int_0^1[F_2^p - F_2^n]\frac{dx}{x} = 0.235 \pm 0.026
+\end{equation}
+But the Gottfried sum rule predicted by QCD and defined as:
+
+\begin{equation}
+\begin{split}
+S_G & = \int_0^1[F_2^p - F_2^n]\frac{dx}{x} \\
+& =\int_0^1 [\frac{1}{3}(u_v(x)-d_v(x))+\frac{2}{3}(\bar{u}(x)-\bar{d}(x))]dx \\
+& = \frac{1}{3} + \frac{2}{3}\int_0^1[\bar{u}(x) - \bar{d}(x)]dx
+\end{split}
+\end{equation}
+where $u_v(x) = u(x) - \bar{u}(x)$ and $d_v(x) = d(x) - \bar{d}(x)$.
+Therefore the measure of flavour asymmetry is related to the difference of the sea-quark distributions and we can see that GSR prediction is not in agreement with the NMC measurement if flavour symmetry $(\frac{2}{3}\int_0^1[\bar{u}(x) - \bar{d}(x)]dx = 0)$ is assumed.
+Finally the NMC measurement implies: $\frac{2}{3}\int_0^1[\bar{u}(x) - \bar{d}(x)]dx = 0.148 \pm 0.039$.
+
+\section{The Drell-Yan process}
+The Drell-Yan process occurs in hadron collisions, it's the production of a lepton anti-lepton pair by annihilation of a quark anti-quark at the tree level.
+Following the NMC result, it was suggested that the Drell-Yan process could provide a more direct probe of the light antiquark asymmetry of the nucleon.
+The fixed target Drell-Yan data from the E866/NuSea experiment is used in two forms in NNPDF:
+\begin{enumerate}
+    \item the $pd$ / $pp$ cross-section ratios of ref.~\cite{Towell:2001nh}.
+    \item the absolute $pp$ differential cross-section measurements of ref.~\cite{Webb:2003ps}.
+\end{enumerate}
+
+%Here we shall discuss the two experiments and their implementation in the NNPDF code.
+Data was taken with an 800 GeV proton beam upon hydrogen and deuterium gas targets with collisions consequently taking place at a hadron-hadron centre of mass energy of $\sqrt{s}=38.8$ GeV.
 
 For each dimuon event, the invariant mass $M$ and the longitudinal momentum $p_{||}$ of the pair
-were reconstructed. At leading order one can then make the identification
+were reconstructed. Considering that the quark of the beam has $p_1 = (x_1\sqrt{s}/2,0,0,x_1\sqrt{s}/2)$ as a four momentum and the anti-quark of the target has $p_2 = (x_2\sqrt{s}/2,0,0,-x_1\sqrt{s}/2)$, at leading order $(M_q \sim 0$, $M_{ll}^2 << s$ and $p_{ll}^T << \sqrt{s}/2)$ one can then make the identification:
 
-\be x_F = \frac{p_{||}}{\sqrt{s}/2} = x_1 - x_2, \ee
-
+\be \boxed{x_F = \frac{p_{z}}{\sqrt{s}/2} = x_1 - x_2} \ee
+since:
+\begin{align*}
+x_F &\equiv \frac{p*_z}{p_z*^{max}} \\
+&\approx \frac{x_1p*_z_1 - x_2p*_z_2}{\sqrt{s}/2} \\
+&= \frac{x_1\sqrt{s}/2 - x_2\sqrt{s}/2}{\sqrt{s}/2}\\
+&= x_1 - x_2
+\end{align*}
 and
 
-\be M^2 = x_1x_2s. \ee
-One can further extract
-\be x_2 = XXX\ee
-which can be identified with the momentum fraction of the target parton at leading order.
+\be \boxed{M^2 = x_1x_2s} \ee
+
+Since:
+\begin{align*}
+    M_{ll}^2 &= (p_1 + p_2)^2 \\ 
+    & \approx [(x_1+x_2)\sqrt{s}/2]^2 - [(x_1-x_2)\sqrt{s}/2]^2\\
+    & = (x_1\sqrt{s})(x_2\sqrt{s})\\
+    & = x_1x_2s
+\end{align*}
+where $x_F$ is the Feynman-x, $x_1$ and $x_2$ are the Bjorken-x of the beam-quark and the target quark respectively which can be identified with the momentum fraction of the parton at leading order.
+\\further one can extract $x_1,x_2=f_{1,2}(x_F,M^2_{ll})$ and $y=f(x_1,x_2)$ (the rapidity).
+\\Solving the system:\\
+\be \begin{cases}
+x_F = x_1 - x_2 \\
+M^2_{ll} = x_1x_2s
+\end{cases} \ee
+\\Gives (for $x_F > 0$, the case of the experiment):\\
+\be
+\begin{cases}
+x_1 = \frac{xf+\sqrt{x_F^2 + \frac{M^2_{ll}}{s}}}{2} \\
+x_2 = \frac{-xf+\sqrt{x_F^2 + \frac{M^2_{ll}}{s}}}{2}
+\end{cases}
+\ee
+\\For $x_F < 0$, switch the expressions of $x_1$ and $x_2$.
 \section{E866R}
 Data is presented as cross-section ratios $\sigma_{pd}/2\sigma_{pp}$ in bins of $x_2$.
 Data is taken in three spectrometer configurations, sensitive to low, medium and high invariant
@@ -53,7 +113,7 @@ masses respectively. In order to remove areas of the spectrum with very poor sen
 the three different spectrometer configurations use three different sets of invariant mass cuts to define the fiducial region. These are shown
 in Table~\ref{tab:massregions}.
 
-\begin{figure}
+\begin{figure}[!h]
   \begin{center}
   \includegraphics{fig2.eps}
     \vspace*{-0.05in}                                
@@ -63,7 +123,7 @@ in Table~\ref{tab:massregions}.
 \end{figure}      
 
 
-\begin{table}
+\begin{table}[!h]
 \begin{center}                                                          
 \begin{tabular}{ccc}               
  mass setting	 & mass regions accepted    \\ \hline
