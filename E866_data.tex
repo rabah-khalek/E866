@@ -4,13 +4,22 @@
 \usepackage{subfig}
 \usepackage[numbers, sort]{natbib}
 \usepackage{hyperref}
-\setlength{\topmargin}{-0.5in}
-\setlength{\evensidemargin}{0in}
-\setlength{\oddsidemargin}{0in}
-\setlength{\textwidth}{6.5in}
-\setlength{\textheight}{9in}
- \setlength{\parindent}{0in}
+\usepackage{amsmath}
+\usepackage{comment}
+%\setlength{\topmargin}{-0.5in}
+%\setlength{\evensidemargin}{0in}
+%\setlength{\oddsidemargin}{0in}
+%\setlength{\textwidth}{6.5in}
+%\setlength{\textheight}{9in}
+%\setlength{\parindent}{0in}
  
+\usepackage{geometry}
+ \geometry{
+ a4paper,
+ left=20mm,
+ top=20mm,
+ }
+
  \long\def\symbolfootnote[#1]#2{\begingroup\def\thefootnote{\fnsymbol{footnote}}
 \footnote[#1]{#2}\endgroup}
 
@@ -20,40 +29,61 @@
 \newcommand{\ea}{\end{eqnarray}}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \title{E866/NuSea data in NNPDF}
-\author{nh}
+\author{Nathan Hartland, Rabah Abdul Khalek}
 \begin{document}
 \maketitle
-Fixed target Drell-Yan data from the E866/NuSea experiment is used in two forms in NNPDF.
-Firstly the $pd$ / $pp$ cross-section ratios of~\cite{Towell:2001nh} and secondly the absolute
-$pp$ differential cross-section measurements of ~\cite{Webb:2003ps}. Here we shall discuss the
-two experiments and their implementation in the NNPDF code.
 
-Data was taken with an 800 GeV proton beam upon hydrogen and deuterium gas targets with collisions
-consequently taking place at a hadron-hadron centre of mass energy of $\sqrt{s}=38.8$ GeV.
+\begin{abstract}
+We review in this paper the $\sigma_{pd}/2\sigma_{pp}$ ratio and the absolute pp differential cross-section measured by the NuSea collaboration on the E866 fixed target Drell-Yan data. We investigate essentially the folding of the detector efficiency in the measurements and its relative effect on the PDF and the deuterium nuclear effects extraction.
+\end{abstract}
 
-For each dimuon event, the invariant mass $M$ and the longitudinal momentum $p_{||}$ of the pair
-were reconstructed. At leading order one can then make the identification
+\section{Introduction}
+The E866 experiment performed at FNAL aimed to record Drell-Yan processes colliding 800 GeV/c proton beam incident on liquid hydrogen and deuterium targets. This experiment was motivated by~\cite{Ellis:1991} that suggested that the Drell-Yan process could provide a more direct probe of the light antiquark asymmetry of the nucleon.
+The fixed target dimuon Drell-Yan data from the E866/NuSea experiment is used in two forms in NNPDF:
+\begin{enumerate}
+    \item the $\sigma_{pd}/2\sigma_{pp}$ cross-section ratios studied in ref.~\cite{Towell:2001nh}.
+    \item the absolute $pp$ differential cross-section measurements studied in ref.~\cite{Webb:2003ps}.
+\end{enumerate}
 
-\be x_F = \frac{p_{||}}{\sqrt{s}/2} = x_1 - x_2, \ee
+%Here we shall discuss the two experiments and their implementation in the NNPDF code.
+The data was taken in a hadron-hadron centre of mass energy of $\sqrt{s}=38.8$ GeV.
+For each dimuon event, the invariant mass $M$ and the longitudinal momentum $p_z$ of the pair were reconstructed. Considering the:
+\begin{itemize} 
+\item Approximation $(M_q \sim 0$, $M^2 << s$ and $p^T << \sqrt{s}/2)$.
+\item Quark of the beam has $p_1 = (x_1\sqrt{s}/2,0,0,x_1\sqrt{s}/2)$.
+\item Anti-quark of the target has $p_2 = (x_2\sqrt{s}/2,0,0,-x_1\sqrt{s}/2)$.
+\end{itemize}
+We deduce that:\\
+\begin{minipage}[!h]{0.49\linewidth}
+\begin{align*} \boxed{x_F = \frac{p_{z}}{\sqrt{s}/2} = x_1 - x_2} \end{align*}
+\begin{align*}
+x_F &\equiv \frac{p*_z}{p_z*^{max}} \\
+%&\approx \frac{x_1p*_z_1 - x_2p*_z_2}{\sqrt{s}/2} \\
+&= \frac{x_1\sqrt{s}/2 - x_2\sqrt{s}/2}{\sqrt{s}/2}\\
+&= x_1 - x_2
+\end{align*}
+\end{minipage}
+\begin{minipage}[!h]{0.49\linewidth}
+\begin{align*} \boxed{M^2 = x_1x_2s} \end{align*}
+\begin{align*}
+    M^2 &= (p_1 + p_2)^2 \\ 
+    & \approx [(x_1+x_2)\sqrt{s}/2]^2 - [(x_1-x_2)\sqrt{s}/2]^2\\
+    & = (x_1\sqrt{s})(x_2\sqrt{s})\\
+    & = x_1x_2s
+\end{align*}
+\end{minipage}\\
+where $x_F$ is the Feynman-x, $x_1$ and $x_2$ are the Bjorken-x of the beam-quark and the target quark respectively which can be identified with the momentum fraction of the parton at leading order.
 
-and
-
-\be M^2 = x_1x_2s. \ee
-One can further extract
-\be x_2 = XXX\ee
-which can be identified with the momentum fraction of the target parton at leading order.
 \section{E866R}
-Data is presented as cross-section ratios $\sigma_{pd}/2\sigma_{pp}$ in bins of $x_2$.
-Data is taken in three spectrometer configurations, sensitive to low, medium and high invariant
+The data is presented as cross-section ratios $\sigma_{pd}/2\sigma_{pp}$ in bins of $x_2$ and taken in three spectrometer configurations, sensitive to low, medium and high invariant
 masses respectively. In order to remove areas of the spectrum with very poor sensitivity, along with the $J/\psi$ and $\Upsilon$ resonances,
 the three different spectrometer configurations use three different sets of invariant mass cuts to define the fiducial region. These are shown
 in Table~\ref{tab:massregions}.
 
-\begin{figure}
+\begin{figure}[!h]
   \begin{center}
   \includegraphics{fig2.eps}
     \vspace*{-0.05in}                                
@@ -63,7 +93,7 @@ in Table~\ref{tab:massregions}.
 \end{figure}      
 
 
-\begin{table}
+\begin{table}[!h]
 \begin{center}                                                          
 \begin{tabular}{ccc}               
  mass setting	 & mass regions accepted    \\ \hline
@@ -95,7 +125,7 @@ There are therefore two principle causes for difficulty in making theoretical co
 \end{itemize}
 
 
-While it has been previously assumed that these effects should cancel in the ratio, this is not guarunteed (and indeed is
+While it has been previously assumed that these effects should cancel in the ratio, this is not guaranteed (and indeed is
 not an assumption made by the NuSea collaboration). As there is no attempt made in the NuSea paper to quantify the size of these effects, 
 there is essentially a missing systematic error on the data whose size is difficult to estimate.
 
@@ -140,6 +170,30 @@ This is due to the lack of any experimental unfolding of detector efficiency and
 Particuarly in the context of deuteron fits where we are attempting to resolve very small effects, it appears that the
 issues with this dataset could very well compromise the result. If we wish to use any NuSea data we are then limited to the absolute cross-sections.
 
+\begin{comment}
+\subsubsection{My interpretation}
+The E866 data is taken according to three spectrometer configurations: low medium and high mass (done for e.g by modifying the first dipole in a way to increase the opening angle of muon pairs to have acceptance at the lowest mass).
+For each of these configurations, there's a specific set of cuts on the invariant mass of the dilepton pair which defines the acceptance region (to increase mass sensitivity and avoid resonances).
+What the NuSear collaboration does regarding the measurement of the ratio is:
+\be \sigma^i_{px} = \int dM \frac{d\sigma_{px}}{dM} \Theta^i(M)\epsilon^i(M) \ee
+Where the $i$ index is to refer to which mass configuration is used.
+
+Now, the NuSea calculate R (R=$\frac{d\sigma_{pd}}{2d\sigma_{pp}}$) at LO and fold it with experimental acceptance then finally tune the ratio (d/u)bar to fit.
+To fold it with the acceptance they actually CALCULATE dR for (x1,x2,Q2) of each event that passed the selection cuts (on the mass spectrum). Finally calculated dR is averaged over x2 (or approximately integrated over x1 and Q2)
+By doing this calculation for each spectrometer configuration and cuts, they are taking into account the proper acceptance and could compare calculation vs data. Finally by combining the 3 "acceptance corrected" data sets, they are able to extract the theoretical d/u bar ratio.
+
+(I didn't talk about the detector efficiency that we mentioned yesterday Nathan, because when I re-read the article I sensed that they included it in the sys error).
+
+Now in the case of NNPDF, if I understood correctly:
+1) we consider selection effects cancel in the ratio (assumption of same fiducial region for both pd and pp, which is not the case)
+2) we convert data from x2 to y(rapidity) using a LO kinematic approximation (M2<<s and pT<<pz)
+
+So for now any or all of those effects are included in the PDFs model.
+Attempt to improve this:
+Basically trying to generate a MC E866-like sample using p and d PDFs to estimate (roughly) back the effect of efficiency and selection cuts by readjusting MC to the data (though here I still have some questions).
+These effects could easily and specially deteriorate the extraction of nuclear PDFs for D which is already in the order of systematic errors.
+\end{comment}
+
 \section{Absolute cross-sections}
 Following the paper on the cross-section ratios, the NuSea collaboration published a measurement of the absolute differential cross-sections~\cite{Webb:2003ps}.
 In this measurement they correct many of the problems in the original paper. Firstly data is presented differentially in $M$, avoiding the need to approximate
@@ -153,15 +207,62 @@ we use cannot compute this, but rather computes.
 
 \be M^3 \frac{\partial^2 \sigma_{px}}{\partial y \partial M} \ee
 
-converting the data using the Jacobian
+converting the data using $dx_F = \frac{\partial f(y)}{\partial y}dy$:
 
-\be \frac{dy}{dx_F} =XXXX \ee 
+\be \label{eq:xf} dx_F = \frac{M}{\sqrt{s}}(e^y + \frac{1}{4}e^{-y})dy \ee 
+
+\textbf{proof of eq.~\ref{eq:xf}:}
+\\Solving the system:\\
+\begin{cases}
+x_F = x_1 - x_2 \\
+M^2 = x_1x_2s
+\end{cases}
+\\Gives (for $x_F > 0$, the case of the experiment):\\
+\begin{cases}
+x_1 = \frac{xf+\sqrt{x_F^2 + \frac{M^2}{s}}}{2} \\
+x_2 = \frac{-xf+\sqrt{x_F^2 + \frac{M^2}{s}}}{2}
+\end{cases}
+\\For $x_F < 0$, switch the expressions of $x_1$ and $x_2$.
+
+\\\\Now $y \equiv \frac{1}{2} ln(\frac{E+p_z}{E-p_z})$ and in our case of dilepton pair, we have: $E =(x_1 + x_2)\sqrt(s)$ and $p_z = (x_1-x_2)\sqrt(s)/2$.
+\\That implies 
+\be
+\begin{split}
+    y & = \frac{1}{2}ln(\frac{x_1}{x_2})\\
+\end{split}
+\ee
+And since $M^2 = x_1x_2s$, 
+\be
+x_1 = \frac{M}{\sqrt{s}}e^y \,\,\,,\,\,\,
+x_2 = \frac{M}{\sqrt{s}}e^{-y}
+\ee
+From this:
+\be
+\begin{cases}
+y = \frac{1}{2}ln(\frac{x_1}{x_2}) \\
+M^2 = x_1x_2s
+\end{cases}
+\rightarrow x_1 = \frac{M^2}{\sqrt{s}}e^y
+\ee
+and 
+\be \label{eq:xf}
+\begin{cases}
+x_1=\frac{M_ll}{\sqrt{s}}e^y \\
+x_2=\frac{x_F + \sqrt{x_F^2 + M^2/s}}{2}
+\end{cases}
+\rightarrow x_F = \frac{M}{\sqrt{s}}\cdot\frac{1-4e^{2y}}{-4e^y}
+\ee
+Finally from \ref{eq:xf} and since $dx_F = \frac{\partial f(y)}{\partial y}dy$ we conclude that:
+\be
+dx_F = \frac{M}{\sqrt{s}}(e^y + \frac{1}{4}e^{-y})dy
+\ee
 
 It should be emphasised that this conversion is only valid at leading order, and as pointed out in NNPDF note Notes on Hadronic Observables June 18, 2009
 can be a terrible approximation at NLO.
 
 \begin{thebibliography}{9}
 %\cite{Towell:2001nh}
+  
 \bibitem{Towell:2001nh}
   R.~S.~Towell {\it et al.} [NuSea Collaboration],
   ``Improved measurement of the anti-d / anti-u asymmetry in the nucleon sea,''
@@ -195,8 +296,11 @@ can be a terrible approximation at NLO.
   %%CITATION = HEP-EX/0301031;%%
   %61 citations counted in INSPIRE as of 03 Oct 2017
 
+\bibitem{Ellis:1991}
+  S. D. Ellis and W. J. Stirling,
+  Phys. Lett. B\textbf{ 256}, 258 (1991).
+
 
 \end{thebibliography}
 
 \end{document}
-
